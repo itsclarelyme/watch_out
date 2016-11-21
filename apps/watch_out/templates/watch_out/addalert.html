@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+    <title>WATCH OUT!</title>
+    <meta charset="urf-8">
+    <script type="text/javascript"></script>
+
+</head>
+
+<body>
+
+  <div id="header">
+    <a href="/login"><button>LOGIN</button></a>
+    <a href="/login"><button>REGISTER</button></a>
+    <h1>Watchout!</h1>
+    <h3>Crime activity monitor near your location!</h3>
+  </div>
+
+
+  <div id="content">
+    <form action="/addalert/process" method="post">
+      {% csrf_token %}
+      <p>Location: <input type="text" name="location" placeholder="location"></p>
+      <p>Crime Type: </p>
+      <select name="type">
+          <option value=".....">type1</option>
+          <option value=".....">type2</option>
+          <option value=".....">type3</option>
+          <option value=".....">type4</option>
+          <option value=".....">type5</option>
+
+      </select>
+      <p>Description: </p>
+      <textarea name="description" placeholder="please describe the incident" rows="5" cols="75"></textarea><br>
+      <input type="submit" value="Add Alert">
+    </form>
+    <a href="/"><button>Return to main page</button></A>
+
+  </div>
+
+
+
+</body>
+
+</html>
