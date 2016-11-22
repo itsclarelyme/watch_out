@@ -1,42 +1,107 @@
-<!DOCTYPE HTML>
-
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Geocoding service</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
-<head>
-    <title>WATCH OUT!</title>
-    <meta charset="urf-8">
-    <script type="text/javascript"></script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 400px;
+        width: 80%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+    </style>
+    <script>
+      $(document).ready(function(){
+        console.log("start")
+        $('form').submit(function() {
+          console.log("submit")
+        $.post($(this).attr('action'), $(this).serialize(), function(res) {
+          console.log("click")
+            // pay careful attention to the response object
+            console.log('the response object:');
+            console.log(res);
+        }, 'json');
+        // don't forget, without it the page will refresh
+        return false;
+         });
+            //geocodeAddress(geocoder, map);
+            //'key' = '1479774917477'
 
-</head>
-
-<body>
-
-  <div id="header">
-    <a href="/login"><button>LOGIN</button></a>
-    <a href="/login"><button>REGISTER</button></a>
-    <h1>Watchout!</h1>
-    <h3>Crime activity monitor near your location!</h3>
-  </div>
+          });
 
 
-  <div id="content">
-    <form action="/" method="post">  
-      {% csrf_token %}
-      <input type="text" name="location">
-      <input type="submit" value="Check Area"><br><br>
-
-      <div>THIS IS WHERE THE MAP GOES</div>
-      
-    </form>
-
-    <a href="/display"><button>Check out the display page</button></a><hr>
-    <p>See something suspicious? Add an alert!</p>
-    <a href="/addalert"><button>Add Alert</button></a>
-
-  </div>
+    </script>
 
 
 
-</body>
+  </head>
+  <body>
 
+    <div id="header">
+      <a href="/login"><button>Login</button></a>
+      <a href="/login"><button>Register</button></a>
+      <h1>Watchout</h1>
+      <h3>Check out the crime rate for the area</h3>
+    </div>
+
+
+
+    <div id="content">
+      <form action="/submitform" method="post">
+        {% csrf_token %}
+        <input id="address" type="textbox" placeholder="address">
+        <input id="submit" type="button" value="Geocode">
+        <input id="radius" type="text" placeholder="0.5">
+        <input id="checkcrime" type="submit" value="Check Crime">
+      </form>
+      <div id="map"></div>
+    
+      <script>
+        function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: {lat: 37.3382, lng: -121.8863}
+          });
+          var geocoder = new google.maps.Geocoder();
+
+          document.getElementById('submit').addEventListener('click', function() {
+            geocodeAddress(geocoder, map);
+          });
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+          var address = document.getElementById('address').value;
+          geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+              resultsMap.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                map: resultsMap,
+                position: results[0].geometry.location
+              });
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+        }
+      </script>
+      <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4&callback=initMap">
+      </script>
+
+    </div>
+
+    <hr>
+    
+
+
+
+
+
+
+  </body>
 </html>

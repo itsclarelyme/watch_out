@@ -7,10 +7,10 @@ urlpatterns = [
 	url(r'^addalert$', views.addalert),
 	url(r'^display$', views.display),     #####crime ID????
 	url(r'^addalert/process$', views.addalertprocess),
+	url(r'^submitform$', views.formprocess),
 
 
 
-	url(r'^$', views.index),
 	url(r'^$', views.index),
 
 ]
