@@ -39,8 +39,12 @@
               $.post($(this).attr('action'), passdata, function(res) {
                 for(i=0; i<20; i++) {
                   console.log("object #:"+i);
+                  var type = res.crimes[i].type;
+                  var date = res.crimes[i].date;
+                  var address = res.crimes[i].address;
+                  var link = res.crimes[i].link;
                   var latlng = new google.maps.LatLng(res.crimes[i].lat, res.crimes[i].lon);
-                  addmarker(latlng);
+                  addmarker(latlng, type, date, address, link);
                   
                 }
                 console.log("end of for loop");
@@ -73,18 +77,26 @@
           }
 
 
-        function addmarker(latilongi) {
+        function addmarker(latilongi, type, date, address, link) {
           console.log("adding new marker");
-          console.log(latilongi);
-          //var map = document.getElementById('map');
-          console.log(map);
           var marker = new google.maps.Marker({
               position: latilongi,
               map: map,
               title: 'new marker',
           });
+          contentStr= '<h5>'+ type +' </h5>' + '<p>'+ date +' </p>'+ '<p>'+ address +' </p>' + '<a href="'+ link+'">Learn More</a>'
+          var infowindow = new google.maps.InfoWindow({
+            content: contentStr
+
+          });
           markers.push(marker);
           console.log("I should have a new marker");
+          marker.addListener('mouseover', function() {
+           infowindow.open(map, marker);
+          });
+          marker.addListener('click', function() {
+          infowindow.close();
+          });
         }
 
         // Shows any markers currently in the array.
@@ -146,7 +158,7 @@
         {% csrf_token %}
         <input id="address" name="address" class="form-control txt1" type="textbox" placeholder="address">
         <input id="geo" class="btn btn-default btn3" type="button" value="Geocode">
-        <input id="radius" name="radius" class="form-control txt2" type="text" placeholder="0.5">
+        <input id="radius" name="radius" class="form-control txt2" type="text" placeholder="0.05">
         <input id="checkcrime" class="btn btn-default btn3" type="submit" value="Check Crime">
       </form><br>
       <div id="map"></div>
@@ -160,8 +172,7 @@
     <hr>
 
     <div id="footer">
-      <a id="displaycrime" href="/display">Display Crime</a>
-      <h4>See something suspicious? Add an alert!</h4>
+      <h4 id="suspicious" >See something suspicious? Add an alert!</h4>
       <a id="addalert" href="/addalert"><button class="btn btn-default btn3">Add an alert!</button></a>
     </div>
     
