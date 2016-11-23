@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geocoding service</title>
+    <title>Watch Out!</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/index.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
     <style>
@@ -21,8 +27,10 @@
             $('form').submit(function() {
               deleteMarkers();
               console.log("submit");
+
               console.log("this to test global variable"+ loclat + loclng);
               var passdata = $('#thisform').serializeArray();
+              console.log(passdata);
               console.log("ready to push");
               passdata.push({name: 'lat', value:  loclat},{name: 'lng', value: loclng});
               console.log("done with push");
@@ -44,6 +52,8 @@
               console.log(markers);
             });
 
+            //console.log(res);
+
           });
 
           var map;
@@ -54,7 +64,6 @@
               zoom: 12,
               center: initcenter
             });
-
             var geocoder = new google.maps.Geocoder();
 
             document.getElementById("geo").addEventListener('click', function() {
@@ -90,16 +99,11 @@
           markers[i].setMap(map);
         }
       }
-
-
-
         // Deletes all markers in the array by removing references to them.
         function deleteMarkers() {
           clearMarkers();
           markers = [];
         }
-
-
           //not workingggggg
         var loclat;
         var loclng;
@@ -129,27 +133,23 @@
   </head>
   <body>
 
+    <div id="container">
     <div id="header">
-      <a href="/login"><button>Login</button></a>
-      <a href="/login"><button>Register</button></a>
-      <h1>Watchout</h1>
-      <h3>Check out the crime rate for the area</h3>
+      <a href="/login"><button type="button" class="btn btn-default btn2">Login</button></a>
+      <a href="/registration"><button type="button" class="btn btn-default btn2">Register</button></a>
     </div>
 
-
     <div id="content">
+      <h1>Watchout</h1>
+      <h3>Check out the crime rate for the area</h3>
       <form id="thisform" action="/submitform" method="post">
         {% csrf_token %}
-        <input id="address" name="address" type="textbox" value="1920 zanker rd">
-        <input id="geo" type="button" value="Geocode">
-        <input id="radius" name="radius" type="text" value="0.5">
-        <input id="checkcrime" type="submit" value="Check Crime">
-      </form>
+        <input id="address" name="address" class="form-control txt1" type="textbox" placeholder="address">
+        <input id="geo" class="btn btn-default btn3" type="button" value="Geocode">
+        <input id="radius" name="radius" class="form-control txt2" type="text" placeholder="0.5">
+        <input id="checkcrime" class="btn btn-default btn3" type="submit" value="Check Crime">
+      </form><br>
       <div id="map"></div>
-    
-      <script>
-        
-      </script>
 
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4&callback=initMap">
@@ -159,10 +159,11 @@
 
     <hr>
 
-    <a href="/display">display crime</a>
-
-    <p>See something suspicious? Add an alert!</p>
-    <a href="/addalert"><button>Add an alert!</button></a>
+    <div id="footer">
+      <a id="displaycrime" href="/display">Display Crime</a>
+      <h4>See something suspicious? Add an alert!</h4>
+      <a id="addalert" href="/addalert"><button class="btn btn-default btn3">Add an alert!</button></a>
+    </div>
     
 
 

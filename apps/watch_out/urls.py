@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
 	url(r'^$', views.index),
 	url(r'^login$', views.login),
+	url(r'^login/process$', views.loginprocess),
+	url(r'^registration$', views.register),
+	url(r'^registration/process$', views.registerprocess),
 	url(r'^addalert$', views.addalert),
 	url(r'^display$', views.display),     #####crime ID????
 	url(r'^addalert/process$', views.addalertprocess),
