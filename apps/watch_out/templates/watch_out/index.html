@@ -20,31 +20,76 @@
             console.log("start")
             $('form').submit(function() {
               console.log("submit")
-            $.post($(this).attr('action'), $(this).serialize(), function(res) {
-              console.log("click")
-                // pay careful attention to the response object
-              console.log('the response object:');
-
-
-
+              $.post($(this).attr('action'), $(this).serialize(), function(res) {
+                console.log("click");
+                  // pay careful attention to the response object
+                console.log('the response object:');
                 //now we want to extract all the long lat to add marker
-              console.log(res.crimes[0]);
-              console.log(res.crimes.length);
-              var i;
-              for(i=0; i<res.crimes.length; i++) {
-                console.log("object #:"+i);
-                console.log(res.crimes[i].lon);
-                console.log(res.crimes[i].lat);
-              }
-              console.log("end of for loop");
+                console.log(res.crimes[0]);
+                console.log(res.crimes.length);
+                var i;
 
-
+                for(i=0; i<5; i++) {
+                  console.log("object #:"+i);
+                  var latlng = new google.maps.LatLng(res.crimes[i].lat, res.crimes[i].lon);
+                  addmarker(latlng)
+                  
+                }
+                console.log("end of for loop");
+                // var latlng = new google.maps.LatLng(res.crimes[i].lon,res.crimes[i].lat);
+                // addmarker(latlng)
               }, 'json');
             // don't forget, without it the page will refresh
               return false;
             });
 
           });
+
+          var map;
+          function initMap() {
+            var initcenter = new google.maps.LatLng(37.3, -122);
+            map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 12,
+              center: initcenter
+            });
+            var marker = new google.maps.Marker({
+              position: initcenter,
+              map: map,
+              title: 'Hello World!'
+            });
+          }
+
+
+        function addmarker(latilongi) {
+            console.log("adding new marker");
+            console.log(latilongi);
+            //var map = document.getElementById('map');
+            console.log(map);
+            var marker = new google.maps.Marker({
+                position: latilongi,
+                map: map,
+                title: 'new marker',
+            });
+            console.log("I should have a new marker");
+        }
+
+          //not workingggggg
+        function geocodeAddress(geocoder, resultsMap) {
+          var address = document.getElementById('address').value;
+          geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+              resultsMap.setCenter(results[0].geometry.location);
+              console.log(results.map);
+              console.log(results[0].geometry.location)
+              var marker = new google.maps.Marker({
+                map: resultsMap,
+                position: results[0].geometry.location
+              });
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+        }
 
     </script>
 
@@ -63,40 +108,15 @@
     <div id="content">
       <form action="/submitform" method="post">
         {% csrf_token %}
-        <input id="address" type="textbox" placeholder="address">
+        <input id="address" name="address" type="textbox" value="1920 zanker rd">
         <input id="geo" type="button" value="Geocode">
-        <input id="radius" type="text" placeholder="0.5">
+        <input id="radius" name="radius" type="text" value="0.5">
         <input id="checkcrime" type="submit" value="Check Crime">
       </form>
       <div id="map"></div>
     
       <script>
-        function initMap() {
-          var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 12,
-            center: {lat: 37.3382, lng: -121.8863}
-          });
-          var geocoder = new google.maps.Geocoder();
-
-          document.getElementById('geo').addEventListener('click', function() {
-            geocodeAddress(geocoder, map);
-          });
-        }
-
-        function geocodeAddress(geocoder, resultsMap) {
-          var address = document.getElementById('address').value;
-          geocoder.geocode({'address': address}, function(results, status) {
-            if (status === 'OK') {
-              resultsMap.setCenter(results[0].geometry.location);
-              var marker = new google.maps.Marker({
-                map: resultsMap,
-                position: results[0].geometry.location
-              });
-            } else {
-              alert('Geocode was not successful for the following reason: ' + status);
-            }
-          });
-        }
+        
       </script>
 
       <script async defer

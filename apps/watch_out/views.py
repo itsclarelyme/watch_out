@@ -34,16 +34,20 @@ def formprocess(request):
 	
 	print('im in the formprocess')
 
-	
-	address = request.POST.get('address')
+	#print "post", request.POST
+	address = request.POST['address']
 	this= request.POST
 	print len(this)
 	print address
 
-	# position = {'address': address, 'key': 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'}
-	# loglat = requests.get('http://maps.googleapis.com/maps/api/geocode/json', params=position)
-	# print "this is loglat results:", loglat
-	#geocoding = requests.get("http://maps.google.com/maps/geo?q=%s&output=%s&key=%s" % (address, output, 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'))
+	position = {'address': address, 'key': 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'}
+	loglat = requests.get('https://maps.googleapis.com/maps/api/geocode/json', params=position)
+	print "this is loglat results:", 
+	addressinfo = loglat.json()
+
+	lati = addressinfo.results[0].geometry.location
+	print lati
+
 	radius = request.POST.get('radius')
 	print radius
 	
