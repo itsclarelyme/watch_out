@@ -16,27 +16,37 @@
       /* Optional: Makes the sample page fill the window. */
     </style>
     <script>
-      $(document).ready(function(){
-        console.log("start")
-        $('form').submit(function() {
-          console.log("submit")
-        $.post($(this).attr('action'), $(this).serialize(), function(res) {
-          console.log("click")
-            // pay careful attention to the response object
-            console.log('the response object:');
-            console.log(res);
-        }, 'json');
-        // don't forget, without it the page will refresh
-        return false;
-         });
-            //geocodeAddress(geocoder, map);
-            //'key' = '1479774917477'
+          $(document).ready(function(){
+            console.log("start")
+            $('form').submit(function() {
+              console.log("submit")
+            $.post($(this).attr('action'), $(this).serialize(), function(res) {
+              console.log("click")
+                // pay careful attention to the response object
+              console.log('the response object:');
+
+
+
+                //now we want to extract all the long lat to add marker
+              console.log(res.crimes[0]);
+              console.log(res.crimes.length);
+              var i;
+              for(i=0; i<res.crimes.length; i++) {
+                console.log("object #:"+i);
+                console.log(res.crimes[i].lon);
+                console.log(res.crimes[i].lat);
+              }
+              console.log("end of for loop");
+
+
+              }, 'json');
+            // don't forget, without it the page will refresh
+              return false;
+            });
 
           });
 
-
     </script>
-
 
 
   </head>
@@ -50,12 +60,11 @@
     </div>
 
 
-
     <div id="content">
       <form action="/submitform" method="post">
         {% csrf_token %}
         <input id="address" type="textbox" placeholder="address">
-        <input id="submit" type="button" value="Geocode">
+        <input id="geo" type="button" value="Geocode">
         <input id="radius" type="text" placeholder="0.5">
         <input id="checkcrime" type="submit" value="Check Crime">
       </form>
@@ -69,7 +78,7 @@
           });
           var geocoder = new google.maps.Geocoder();
 
-          document.getElementById('submit').addEventListener('click', function() {
+          document.getElementById('geo').addEventListener('click', function() {
             geocodeAddress(geocoder, map);
           });
         }
@@ -89,6 +98,7 @@
           });
         }
       </script>
+
       <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4&callback=initMap">
       </script>

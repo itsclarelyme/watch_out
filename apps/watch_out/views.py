@@ -34,17 +34,26 @@ def formprocess(request):
 	
 	print('im in the formprocess')
 
-	#to geocode the address
-	# post = request.get('address')
-	# print post
-	# output = "csv"
-	# request = requests.get("http://maps.google.com/maps/geo?q=%s&output=%s&key=%s" % (post, output, settings.GOOGLE_API_KEY))
-	# print request
-	payload = {'lat': '37.89', 'lon': '-122.9', 'radius': '3', 'key': '.', '_': '1479774917477'}
+	
+	address = request.POST.get('address')
+	this= request.POST
+	print len(this)
+	print address
+
+	# position = {'address': address, 'key': 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'}
+	# loglat = requests.get('http://maps.googleapis.com/maps/api/geocode/json', params=position)
+	# print "this is loglat results:", loglat
+	#geocoding = requests.get("http://maps.google.com/maps/geo?q=%s&output=%s&key=%s" % (address, output, 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'))
+	radius = request.POST.get('radius')
+	print radius
+	
+	payload = {'lat': '37.89', 'lon': '-121.9', 'radius': '0.2', 'key': '.', '_': '1479774917477'}
 	r = requests.get('https://api.spotcrime.com/crimes.json', params=payload)
 	print ('im about to return stuff')
 
 	return JsonResponse(r.json())
+
+
 
 
 
