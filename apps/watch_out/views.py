@@ -34,24 +34,32 @@ def formprocess(request):
 	
 	print('im in the formprocess')
 
-	#print "post", request.POST
-	address = request.POST['address']
-	this= request.POST
-	print len(this)
-	print address
+	# #print "post", request.POST
+	# address = request.POST['address']
+	# this= request.POST
+	# print len(this)
+	# print address
 
-	position = {'address': address, 'key': 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'}
-	loglat = requests.get('https://maps.googleapis.com/maps/api/geocode/json', params=position)
-	print "this is loglat results:", 
-	addressinfo = loglat.json()
+	# position = {'address': address, 'key': 'AIzaSyCm0CIWG6AZ7uLfzCSDNxL7PueiTOTNCF4'}
+	# loglat = requests.get('https://maps.googleapis.com/maps/api/geocode/json', params=position)
+	# print "this is loglat results:", 
+	# addressinfo = loglat.json()
 
-	lati = addressinfo.results[0].geometry.location
-	print lati
+	# lati = addressinfo.results[0].geometry.location
+	# print lati
 
-	radius = request.POST.get('radius')
+	# radius = request.POST.get('radius')
+	# print radius
+	data = request.POST
+	print data
+	radius = data['radius']
 	print radius
+	lat = data['lat']
+	print lat
+	lng = data['lng']
+	print lng
 	
-	payload = {'lat': '37.89', 'lon': '-121.9', 'radius': '0.2', 'key': '.', '_': '1479774917477'}
+	payload = {'lat': lat, 'lon': lng, 'radius': radius, 'key': '.', '_': '1479774917477'}
 	r = requests.get('https://api.spotcrime.com/crimes.json', params=payload)
 	print ('im about to return stuff')
 

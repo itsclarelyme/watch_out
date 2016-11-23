@@ -17,22 +17,22 @@
     </style>
     <script>
           $(document).ready(function(){
-            console.log("start")
+            console.log("start");
             $('form').submit(function() {
-              console.log("submit")
-              $.post($(this).attr('action'), $(this).serialize(), function(res) {
-                console.log("click");
-                  // pay careful attention to the response object
-                console.log('the response object:');
-                //now we want to extract all the long lat to add marker
-                console.log(res.crimes[0]);
-                console.log(res.crimes.length);
-                var i;
+              deleteMarkers();
+              console.log("submit");
+              console.log("this to test global variable"+ loclat + loclng);
+              var passdata = $('#thisform').serializeArray();
+              console.log("ready to push");
+              passdata.push({name: 'lat', value:  loclat},{name: 'lng', value: loclng});
+              console.log("done with push");
+              console.log(passdata);
 
-                for(i=0; i<5; i++) {
+              $.post($(this).attr('action'), passdata, function(res) {
+                for(i=0; i<20; i++) {
                   console.log("object #:"+i);
                   var latlng = new google.maps.LatLng(res.crimes[i].lat, res.crimes[i].lon);
-                  addmarker(latlng)
+                  addmarker(latlng);
                   
                 }
                 console.log("end of for loop");
@@ -41,39 +41,68 @@
               }, 'json');
             // don't forget, without it the page will refresh
               return false;
+              console.log(markers);
             });
 
           });
 
           var map;
+          var markers=[];
           function initMap() {
             var initcenter = new google.maps.LatLng(37.3, -122);
             map = new google.maps.Map(document.getElementById('map'), {
               zoom: 12,
               center: initcenter
             });
-            var marker = new google.maps.Marker({
-              position: initcenter,
-              map: map,
-              title: 'Hello World!'
+
+            var geocoder = new google.maps.Geocoder();
+
+            document.getElementById("geo").addEventListener('click', function() {
+            //call this function
+              geocodeAddress(geocoder, map);
             });
           }
 
 
         function addmarker(latilongi) {
-            console.log("adding new marker");
-            console.log(latilongi);
-            //var map = document.getElementById('map');
-            console.log(map);
-            var marker = new google.maps.Marker({
-                position: latilongi,
-                map: map,
-                title: 'new marker',
-            });
-            console.log("I should have a new marker");
+          console.log("adding new marker");
+          console.log(latilongi);
+          //var map = document.getElementById('map');
+          console.log(map);
+          var marker = new google.maps.Marker({
+              position: latilongi,
+              map: map,
+              title: 'new marker',
+          });
+          markers.push(marker);
+          console.log("I should have a new marker");
         }
 
+        // Shows any markers currently in the array.
+        function showMarkers() {
+          setMapOnAll(map);
+        }
+        function clearMarkers() {
+        setMapOnAll(null);
+        }
+        function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+      }
+
+
+
+        // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+          clearMarkers();
+          markers = [];
+        }
+
+
           //not workingggggg
+        var loclat;
+        var loclng;
         function geocodeAddress(geocoder, resultsMap) {
           var address = document.getElementById('address').value;
           geocoder.geocode({'address': address}, function(results, status) {
@@ -85,6 +114,9 @@
                 map: resultsMap,
                 position: results[0].geometry.location
               });
+              loclat = results[0].geometry.location.lat();
+              loclng = results[0].geometry.location.lng();
+              console.log(loclat, loclng);
             } else {
               alert('Geocode was not successful for the following reason: ' + status);
             }
@@ -106,7 +138,7 @@
 
 
     <div id="content">
-      <form action="/submitform" method="post">
+      <form id="thisform" action="/submitform" method="post">
         {% csrf_token %}
         <input id="address" name="address" type="textbox" value="1920 zanker rd">
         <input id="geo" type="button" value="Geocode">
